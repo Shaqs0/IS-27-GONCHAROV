@@ -3,9 +3,8 @@
 
 
 def InvertDigits(K):
-    K_str = str(K)
-    reversed_str = K_str[::-1]  
-    return reversed_str
+    reversed_str = str(K)
+    return reversed_str[::-1]  
 
 try:
     print(InvertDigits(int(input('Введите целое положительное число: '))))
