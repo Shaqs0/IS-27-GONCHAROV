@@ -4,14 +4,14 @@
 
 def generate_list(a, b):
     result = [a, b] 
-    for i in range(1, 10):
+    for _ in range(1, 10):
         next_elem = a + b 
         result.append(next_elem) 
         a, b = b, next_elem
     return result
 
-A = int(input("Введите число A: "))
-B = int(input("Введите число B: "))
+A = 3
+B = 4
 
 if A > 2 and B > 2:
     lst = generate_list(A, B)
