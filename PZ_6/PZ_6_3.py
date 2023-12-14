@@ -1,21 +1,16 @@
-#В6 Дан список размера N. Возвести в квадрат все его локальные минимумы
-#(то есть числа, меньшие своих соседей).
+#Дан список размера N. Осуществить циклический сдвиг элементов списка вправо на одну позицию (при этом A1 перейдёт в A2, A2 - в A3,..., An - в A1)
 
-def find_local_minima(lst):
-    n = len(lst)
-    if n < 3:
-        return []  
+def cyclic_shift_right(input_list):
+    last_element = input_list[-1]
+    
+    for i in range(len(input_list) - 1, 0, -1):
+        input_list[i] = input_list[i - 1]
+    
+    input_list[0] = last_element
 
-    minima_list = []
+A = [1, 4, 8, -10, 11, 2, -6]
 
-    for i in range(1, n - 1):
-        if lst[i - 1] > lst[i] < lst[i + 1]:
-            minima_list.append(lst[i] ** 2)
+cyclic_shift_right(A)
 
-    return minima_list
 
-original_list = [4, 2, 1, 3, 5, 1, 7, 2, 8]
-local_minima_list = find_local_minima(original_list)
-
-print("Исходный список:", original_list)
-print("Локальные минимумы:", local_minima_list)
+print(f"Список после циклического сдвига вправо: {A}")

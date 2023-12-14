@@ -2,4 +2,4 @@
 def totaly_symbols(str):
     return f'Код первого символа: {ord(str[0])}\nКод последнего символа: {ord(str[-1])}'
 
-print(totaly_symbols('Слух обо мне пройдет по всей Руси великой'))
+print(totaly_symbols('Слух обо мне пройдет по всей Руси велико'))

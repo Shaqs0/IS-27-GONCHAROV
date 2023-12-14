@@ -1,21 +1,14 @@
-#В6 Дан список размера N. Найти максимальный из его локальных
-#минимумов (локальный минимум - это элемент, которые меньше любого из своих соседей).
+#Дан список A размера N. Сформировать два новых списка B и C: в список B записать все положительные элементы список A, в список 
+#C - все отрицательные (сохраняя исходный порядок следования элементов). Вывести вначале размер и содержимое списка B, а затем - размер и содержимое списка C
 
-def find_local_minima(lst):
-    n = len(lst)
-    if n < 3:
-        return []  
+def split_list(input_list):
+    positive_list = [x for x in input_list if x > 0]
+    negative_list = [x for x in input_list if x < 0]
+    return positive_list, negative_list
 
-    minima_list = []
+A = [1, 4, 8, -10, 11, 2, -6]
 
-    for i in range(1, n - 1):
-        if lst[i - 1] > lst[i] < lst[i + 1]:
-            minima_list.append(lst[i])
+B, C = split_list(A)
 
-    return max(minima_list)
-
-original_list = [4, 2, 1, 3, 5, 1, 7, 2, 8]
-local_minima_list = find_local_minima(original_list)
-
-print("Исходный список:", original_list)
-print("Максимальный локальный минимум:", local_minima_list)
+print(f"Размер списка B: {len(B)}, Содержимое списка B: {B}")
+print(f"Размер списка C: {len(C)}, Содержимое списка C: {C}")
