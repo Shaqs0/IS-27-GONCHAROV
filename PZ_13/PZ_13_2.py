@@ -2,20 +2,19 @@
 
 import random
 
+rows = 3
+cols = 3
+matrix = [[random.randint(1, 10) for _ in range(cols)] for _ in range(rows)]
 
-matrix = [[random.randint(1, 20) for _ in range(3)] for _ in range(3)]
-
-print("Исходная матрица:")
+print('\nИсходная матрица:')
 for row in matrix:
     print(row)
 
+def cube_first_column(row):
+    return [row[0] ** 3] + row[1:]
 
-for i in range(len(matrix)):
-    for j in range(len(matrix[i])):
-        if matrix[i][j] > 10:
-            matrix[i][j] = 0
+matrix = list(map(cube_first_column, matrix))
 
-
-print("\nМатрица после замены элементов больше 10 на 0:")
+print('\nМатрица после возведения в куб первого столбца:')
 for row in matrix:
     print(row)
