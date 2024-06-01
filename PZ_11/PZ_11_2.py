@@ -5,6 +5,8 @@ stop = [' ', '.', ',', '!', ':', '—']
 count = 0
 with open('text18-14.txt', 'r', encoding='utf-8',errors='ignore') as f:
     text = f.read()
+    print(f'Текст до изменения:\n\n{text}\n\nТекст после изменения:\n\n{text.lower()}')
+    
     for i in text:
         if i not in stop:
             count+=1

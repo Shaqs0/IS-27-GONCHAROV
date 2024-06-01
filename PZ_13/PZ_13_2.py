@@ -2,19 +2,17 @@
 
 import random
 
-rows = 3
-cols = 3
-matrix = [[random.randint(1, 10) for _ in range(cols)] for _ in range(rows)]
+def generate_matrix(rows, cols, min_val, max_val):
+    return [[random.randint(min_val, max_val) for _ in range(cols)] for _ in range(rows)]
 
-print('\nИсходная матрица:')
+matrix = generate_matrix(3, 3, 0, 20)
+
+new_matrix = [[0 if element > 10 else element for element in row] for row in matrix]
+
+print("\nИсходная матрица:")
 for row in matrix:
     print(row)
 
-def cube_first_column(row):
-    return [row[0] ** 3] + row[1:]
-
-matrix = list(map(cube_first_column, matrix))
-
-print('\nМатрица после возведения в куб первого столбца:')
-for row in matrix:
+print("\nНовая матрица:")
+for row in new_matrix:
     print(row)

@@ -18,3 +18,8 @@ matrix = list(map(lambda row: [cube(row[0]), row[1], row[2]], matrix))
 print('\nМатрица после возведения в куб первого столбца:')
 for row in matrix:
     print(row)
+    
+    
+    
+    
+    
