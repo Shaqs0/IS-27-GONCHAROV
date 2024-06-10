@@ -18,35 +18,24 @@ def create_connection(db_file):
 def create_table(conn):
     try:
         create_table_sql = """
-        CREATE TABLE IF NOT EXISTS Турист (
-            Код_клиента INTEGER PRIMARY KEY,
-            Клиент TEXT NOT NULL,
-            Телефон TEXT NOT NULL,
-            Название_страны TEXT NOT NULL,
-            Регион TEXT NOT NULL,
-            Продолжительность_поездки INTEGER NOT NULL,
-            Стоимость_путевки REAL NOT NULL
+        CREATE TABLE IF NOT EXISTS Tourist (
+            id_client INTEGER PRIMARY KEY,
+            client TEXT NOT NULL,
+            phone TEXT NOT NULL,
+            country_name TEXT NOT NULL,
+            region TEXT NOT NULL,
+            trip_duration INTEGER NOT NULL,
+            cost_vacation REAL NOT NULL
         );
         """
-    except: print ('Ошибка!\nВводите в продолжительности поездки и Стоимости путёвки число!\n')
-    try:
         c = conn.cursor()
         c.execute(create_table_sql)
         print("Таблица создана.")
     except Error as e:
         print(e)
 
-database = "tourism_agency.db"
-
-conn = create_connection(database)
-if conn is not None:
-    create_table(conn)
-else:
-    print("Ошибка! Невозможно создать соединение с базой данных.")
-
-
 def add_tourist(conn, tourist):
-    sql = ''' INSERT INTO Турист(Клиент, Телефон, Название_страны, Регион, Продолжительность_поездки, Стоимость_путевки)
+    sql = ''' INSERT INTO Tourist(client, phone, country_name, region, trip_duration, cost_vacation)
               VALUES(?,?,?,?,?,?) '''
     cur = conn.cursor()
     cur.execute(sql, tourist)
@@ -59,25 +48,24 @@ def search_tourist(conn, query, params):
     rows = cur.fetchall()
     return rows
 
-def delete_tourist(conn, id):
-    sql = 'DELETE FROM Турист WHERE Код_клиента=?'
+def delete_tourist(conn, id_client):
+    sql = 'DELETE FROM Tourist WHERE id_client=?'
     cur = conn.cursor()
-    cur.execute(sql, (id,))
+    cur.execute(sql, (id_client,))
     conn.commit()
 
 def update_tourist(conn, tourist):
-    sql = ''' UPDATE Турист
-              SET Клиент = ? ,
-                  Телефон = ? ,
-                  Название_страны = ? ,
-                  Регион = ? ,
-                  Продолжительность_поездки = ? ,
-                  Стоимость_путевки = ?
-              WHERE Код_клиента = ?'''
+    sql = ''' UPDATE Tourist
+              SET client = ? ,
+                  phone = ? ,
+                  country_name = ? ,
+                  region = ? ,
+                  trip_duration = ? ,
+                  cost_vacation = ?
+              WHERE id_client = ?'''
     cur = conn.cursor()
     cur.execute(sql, tourist)
     conn.commit()
-
 
 def main():
     try:
@@ -97,72 +85,85 @@ def main():
 
                 choice = input("Введите номер действия: ")
 
-                if choice == '1':
-                    Клиент = input("Введите фамилию клиента: ")
-                    Телефон = input("Введите телефон клиента: ")
-                    Название_страны = input("Введите название страны: ")
-                    Регион = input("Введите регион: ")
-                    Продолжительность_поездки = int(input("Введите продолжительность поездки: "))
-                    Стоимость_путевки = float(input("Введите стоимость путевки: "))
+                if choice.isdigit() and 1 <= int(choice) <= 5:
+                    choice = int(choice)
+                    if choice == 1:
+                        try:
+                            client = input("Введите фамилию клиента: ")
+                            phone = input("Введите телефон клиента: ")
+                            country_name = input("Введите название страны: ")
+                            region = input("Введите регион: ")
+                            trip_duration = int(input("Введите продолжительность поездки: "))
+                            cost_vacation = float(input("Введите стоимость путевки: "))
 
-                    tourist = (Клиент, Телефон, Название_страны, Регион, Продолжительность_поездки, Стоимость_путевки)
-                    add_tourist(conn, tourist)
-                    print("Клиент добавлен успешно.")
+                            tourist = (client, phone, country_name, region, trip_duration, cost_vacation)
+                            add_tourist(conn, tourist)
+                            print("Клиент добавлен успешно.")
+                        except ValueError:
+                            print("Ошибка: Некорректный формат данных. Пожалуйста, попробуйте снова.")
+                    
+                    elif choice == 2:
+                        print("1. Поиск по фамилии")
+                        print("2. Поиск по телефону")
+                        print("3. Поиск по стране")
+                        sub_choice = input("Введите номер действия: ")
 
-                elif choice == '2':
-                    print("1. Поиск по фамилии")
-                    print("2. Поиск по телефону")
-                    print("3. Поиск по стране")
-                    sub_choice = input("Введите номер действия: ")
+                        if sub_choice.isdigit() and 1 <= int(sub_choice) <= 3:
+                            sub_choice = int(sub_choice)
+                            if sub_choice == 1:
+                                client = input("Введите фамилию клиента: ")
+                                query = "SELECT * FROM Tourist WHERE client LIKE ?"
+                                params = ('%' + client + '%',)
+                                results = search_tourist(conn, query, params)
+                            elif sub_choice == 2:
+                                phone = input("Введите телефон клиента: ")
+                                query = "SELECT * FROM Tourist WHERE phone LIKE ?"
+                                params = ('%' + phone + '%',)
+                                results = search_tourist(conn, query, params)
+                            elif sub_choice == 3:
+                                country_name = input("Введите название страны: ")
+                                query = "SELECT * FROM Tourist WHERE country_name LIKE ?"
+                                params = ('%' + country_name + '%',)
+                                results = search_tourist(conn, query, params)
+                        else:
+                            print("Неверный выбор.")
+                            continue
 
-                    if sub_choice == '1':
-                        Клиент = input("Введите фамилию клиента: ")
-                        query = "SELECT * FROM Турист WHERE Клиент LIKE ?"
-                        params = ('%' + Клиент + '%',)
-                        results = search_tourist(conn, query, params)
-                    elif sub_choice == '2':
-                        Телефон = input("Введите телефон клиента: ")
-                        query = "SELECT * FROM Турист WHERE Телефон LIKE ?"
-                        params = ('%' + Телефон + '%',)
-                        results = search_tourist(conn, query, params)
-                    elif sub_choice == '3':
-                        Название_страны = input("Введите название страны: ")
-                        query = "SELECT * FROM Турист WHERE Название_страны LIKE ?"
-                        params = ('%' + Название_страны + '%',)
-                        results = search_tourist(conn, query, params)
-                    else:
-                        print("Неверный выбор.")
-                        continue
+                        for row in results:
+                            print(row)
 
-                    for row in results:
-                        print(row)
+                    elif choice == 3:
+                        try:
+                            id_client = int(input("Введите код клиента для удаления: "))
+                            delete_tourist(conn, id_client)
+                            print("Клиент удален успешно.")
+                        except ValueError:
+                            print("Ошибка: Код клиента должен быть числом.")
 
-                elif choice == '3':
-                    id = int(input("Введите код клиента для удаления: "))
-                    delete_tourist(conn, id)
-                    print("Клиент удален успешно.")
+                    elif choice == 4:
+                        try:
+                            id_client = int(input("Введите код клиента для обновления: "))
+                            client = input("Введите фамилию клиента: ")
+                            phone = input("Введите телефон клиента: ")
+                            country_name = input("Введите название страны: ")
+                            region = input("Введите регион: ")
+                            trip_duration = int(input("Введите продолжительность поездки: "))
+                            cost_vacation = float(input("Введите стоимость путевки: "))
 
-                elif choice == '4':
-                    id = int(input("Введите код клиента для обновления: "))
-                    Клиент = input("Введите фамилию клиента: ")
-                    Телефон = input("Введите телефон клиента: ")
-                    Название_страны = input("Введите название страны: ")
-                    Регион = input("Введите регион: ")
-                    Продолжительность_поездки = int(input("Введите продолжительность поездки: "))
-                    Стоимость_путевки = float(input("Введите стоимость путевки: "))
+                            tourist = (client, phone, country_name, region, trip_duration, cost_vacation, id_client)
+                            update_tourist(conn, tourist)
+                            print("Информация о клиенте обновлена.")
+                        except ValueError:
+                            print("Ошибка: Некорректный формат данных. Пожалуйста, попробуйте снова.")
 
-                    tourist = (Клиент, Телефон, Название_страны, Регион, Продолжительность_поездки, Стоимость_путевки, id)
-                    update_tourist(conn, tourist)
-                    print("Информация о клиенте обновлена.")
-
-                elif choice == '5':
-                    break
+                    elif choice == 5:
+                        break
                 else:
                     print("Неверный выбор. Пожалуйста, попробуйте снова.")
 
             conn.close()
-    except:
-        print('Ошибка')
+    except Exception as e:
+        print(f"Ошибка: {e}")
 
 if __name__ == '__main__':
     main()
